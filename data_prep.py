@@ -24,7 +24,7 @@ def load_data(dataset):
 	diabetes_data[diabetes_data == 'not current'] = 5
 
 	#transforming the type of numpy data from str to float
-	diabetes_data = diabetes_data.astype(np.float)
+	diabetes_data = diabetes_data.astype(np.float64)
 
 	#defining the X array
 	diabetes_data_X = diabetes_data[:,:8]
