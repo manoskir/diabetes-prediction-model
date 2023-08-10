@@ -21,6 +21,6 @@ model.compile(
 )
 
 model.fit(
-    dd1_X_train,dd1_y_train,
-    epochs=10, validation_data=(dd1_X_test,dd1_y_test)
+    X_train,y_train,
+    epochs=10, validation_data=(X_test,y_test)
 )
