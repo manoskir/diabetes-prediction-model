@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
 import itertools
+import pandas as pd
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from data_prep import load_data
@@ -53,5 +54,51 @@ models = get_models(num_layers = 2,
                    num_nodes_at_output=2,
                    output_layer_activation='linear')
 
-for model in models:
-	print(model.summary())
+#function that compiles the model, runs the model training and then returns a data frame with the training results
+def optimize(models: list,
+            X_train: np.array,
+            y_train: np.array,
+            X_test: np.array,
+            y_test: np.array,
+            epochs: int = 10,
+            verbose: int = 0) -> pd.DataFrame:
+    
+    results = []
+    
+    #helper function nested under the main function that runs the model training
+    def train(model: tf.keras.Sequential) -> dict:
+        
+        model.compile(
+            loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+            optimizer=tf.keras.optimizers.Adam(0.01),
+            metrics=['accuracy']
+        )
+        
+        model_history = model.fit(X_train, y_train, epochs=epochs, validation_data=(X_test, y_test), verbose = verbose)
+        
+        return {
+            'model_name': model.name,
+            'test_accuracy': model_history.history['val_accuracy'][-1]
+        }
+    
+    for model in models:
+        
+        try:
+            print(model.name, end='...')
+            res = train(model=model)
+            results.append(res)
+        except Exception as e:
+            print(f'{model.name} --> {str(e)}')
+            
+    return pd.DataFrame(results)
+
+optimization_results = optimize(
+    models = models,
+    X_train = X_train,
+    y_train = y_train,
+    X_test = X_test,
+    y_test = y_test,
+    epochs = 2,
+    verbose = 1)
+
+optimization_results.sort_values(by='test_accuracy', ascending = False)
