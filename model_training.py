@@ -101,4 +101,4 @@ optimization_results = optimize(
     epochs = 2,
     verbose = 1)
 
-optimization_results.sort_values(by='test_accuracy', ascending = False)
+print(optimization_results.sort_values(by='test_accuracy', ascending = False))
