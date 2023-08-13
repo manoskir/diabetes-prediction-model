@@ -98,7 +98,7 @@ optimization_results = optimize(
     y_train = y_train,
     X_test = X_test,
     y_test = y_test,
-    epochs = 2,
+    epochs = 10,
     verbose = 1)
 
 print(optimization_results.sort_values(by='test_accuracy', ascending = False))
